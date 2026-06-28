@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+:root {
+  /* Core Base */
+  --background: #f8fafc; 
+  --foreground: #0f172a;
+  
+  /* Primary & Secondary Brand Colors */
+  --primary: #033A95;
+  --secondary: #0077B6;
+  --accent: #FF9F1C; 
+  --muted: #F0F4F8;  
+
+  /* Text Hierarchy */
+  --text-heading: #0f172a; 
+  --text-body: #334155;    
+  --text-muted: #64748b;   
+
+  /* Cards & Surfaces */
+  --card-bg: #ffffff;
+  --card-glass: rgba(255, 255, 255, 0.7); 
+  
+  /* Borders */
+  --border-default: #e2e8f0; 
+  --border-glass: rgba(255, 255, 255, 0.5);
+  --border-focus: var(--primary);
+
+  /* Form Inputs (Fixed for Glassmorphism) */
+  --input-bg: rgba(255, 255, 255, 0.3); /* 30% opaque white */
+  --input-border: rgba(255, 255, 255, 0.5); /* 50% opaque white border */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Core Base */
+    --background: #0a0a0a;
+    --foreground: #f8fafc;
+    
+    /* Brand Colors */
+    --primary: #3b82f6; 
+    --secondary: #38bdf8; 
+    --accent: #fbbf24;
+    --muted: #1e293b;
+
+    /* Text Hierarchy */
+    --text-heading: #f8fafc; 
+    --text-body: #cbd5e1;    
+    --text-muted: #94a3b8;   
+
+    /* Cards & Surfaces */
+    --card-bg: #111827;
+    --card-glass: rgba(17, 24, 39, 0.7); 
+    
+    /* Borders */
+    --border-default: #334155; 
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --border-focus: var(--secondary);
+
+    /* Form Inputs (Fixed for Dark Mode Glass) */
+    --input-bg: rgba(255, 255, 255, 0.05); /* Very subtle white wash */
+    --input-border: rgba(255, 255, 255, 0.1); /* Subtle white border */
+  }
+}
+
+@theme inline {
+  /* Core & Brand */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  
+  /* Text */
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+
+  /* Surfaces */
+  --color-card: var(--card-bg);
+  --color-card-glass: var(--card-glass);
+
+  /* Borders */
+  --color-border: var(--border-default);
+  --color-border-glass: var(--border-glass);
+  --color-border-focus: var(--border-focus);
+
+  /* Inputs */
+  --color-input: var(--input-bg);
+  --color-input-border: var(--input-border);
+
+  /* Fonts */
+  --font-sans: "Inter", var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--text-body);
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+}
+
+/* Base styles for global elements */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-heading);
+}
