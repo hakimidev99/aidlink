@@ -1,67 +1,190 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
-export function AdminStats() {
+type AdminStatsProps = {
+  stats?: {
+    totalProcessed: number;
+    totalProcessedGrowth: number;
+    pendingAudits: number;
+    activeCampaigns: number;
+    totalBackers: number;
+    newBackersToday: number;
+  };
+  loading?: boolean;
+};
+
+const defaultStats = {
+  totalProcessed: 54200000,
+  totalProcessedGrowth: 18,
+  pendingAudits: 24,
+  activeCampaigns: 156,
+  totalBackers: 12400,
+  newBackersToday: 124,
+};
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(value);
+
+const formatCompact = (value: number) =>
+  new Intl.NumberFormat("en", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
+
+function CardSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      
-      {/* Stat 1: Total Volume */}
-      <div className="flex flex-col rounded-3xl border border-white/50 bg-white/40 p-6 shadow-xl backdrop-blur-xl transition-transform hover:-translate-y-1 dark:border-white/10 dark:bg-black/20">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-text-muted">Total Processed</span>
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-3xl font-black text-text-heading dark:text-white">₦54.2M</span>
-          <span className="text-xs font-bold text-emerald-600">+18% this month</span>
-        </div>
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-950 animate-pulse space-y-3">
+      <div className="flex items-center gap-2.5">
+        <div className="h-8 w-8 rounded-lg bg-slate-200 dark:bg-slate-800 shrink-0" />
+        <div className="h-3 w-24 rounded bg-slate-200 dark:bg-slate-800" />
       </div>
+      <div className="h-7 w-32 rounded bg-slate-200 dark:bg-slate-800 mt-4" />
+      <div className="h-3 w-20 rounded bg-slate-100 dark:bg-slate-900 mt-1" />
+    </div>
+  );
+}
 
-      {/* Stat 2: Pending Verifications (Alert State) */}
-      <div className="flex flex-col rounded-3xl border border-red-500/30 bg-red-50/40 p-6 shadow-xl backdrop-blur-xl transition-transform hover:-translate-y-1 dark:border-red-500/20 dark:bg-red-900/10">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-500/15 text-red-600 dark:bg-red-500/20 dark:text-red-400">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-text-muted">Pending Audits</span>
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-3xl font-black text-red-600 dark:text-red-400">24</span>
-          <span className="text-xs font-bold text-red-600/70">Requires attention</span>
-        </div>
-      </div>
-      
-      {/* Stat 3: Active Campaigns */}
-      <div className="flex flex-col rounded-3xl border border-white/50 bg-white/40 p-6 shadow-xl backdrop-blur-xl transition-transform hover:-translate-y-1 dark:border-white/10 dark:bg-black/20">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-text-muted">Active Campaigns</span>
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-3xl font-black text-text-heading dark:text-white">156</span>
-          <span className="text-xs font-bold text-text-muted">Across 8 categories</span>
-        </div>
-      </div>
+export function AdminStats({
+  stats = defaultStats,
+  loading = false,
+}: AdminStatsProps) {
+  const cards = [
+    {
+      title: "Total Processed",
+      value: formatCurrency(stats.totalProcessed),
+      subtitle: `+${stats.totalProcessedGrowth}% this month`,
+      statusClasses: "text-blue-600 dark:text-blue-400",
+      bgClass: "bg-blue-50 dark:bg-blue-950/40",
+      icon: (
+        <svg
+          className="h-4 w-4 text-blue-600 dark:text-blue-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 0v1"
+          />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      ),
+    },
+    {
+      title: "Pending Audits",
+      value: stats.pendingAudits.toString(),
+      subtitle: "Requires attention",
+      statusClasses: "text-amber-600 dark:text-amber-400 font-medium",
+      bgClass: "bg-amber-50 dark:bg-amber-950/40",
+      icon: (
+        <svg
+          className="h-4 w-4 text-amber-600 dark:text-amber-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: "Active Campaigns",
+      value: stats.activeCampaigns.toString(),
+      subtitle: "Across all categories",
+      statusClasses: "text-slate-500 dark:text-slate-400",
+      bgClass: "bg-blue-50 dark:bg-blue-950/40",
+      icon: (
+        <svg
+          className="h-4 w-4 text-blue-600 dark:text-blue-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"
+          />
+        </svg>
+      ),
+    },
+    {
+      title: "Total Backers",
+      value: formatCompact(stats.totalBackers),
+      subtitle: `+${stats.newBackersToday} joined today`,
+      statusClasses: "text-blue-600 dark:text-blue-400",
+      bgClass: "bg-blue-50 dark:bg-blue-950/40",
+      icon: (
+        <svg
+          className="h-4 w-4 text-blue-600 dark:text-blue-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M7 20H2v-2a3 3 0 015.356-1.857"
+          />
+        </svg>
+      ),
+    },
+  ];
 
-      {/* Stat 4: Active Donors */}
-      <div className="flex flex-col rounded-3xl border border-white/50 bg-white/40 p-6 shadow-xl backdrop-blur-xl transition-transform hover:-translate-y-1 dark:border-white/10 dark:bg-black/20">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FF9F1C]/15 text-[#FF9F1C] dark:bg-[#FF9F1C]/20">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-          </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-text-muted">Total Backers</span>
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-3xl font-black text-text-heading dark:text-white">12.4K</span>
-          <span className="text-xs font-bold text-[#FF9F1C]">+124 new today</span>
-        </div>
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <CardSkeleton key={index} />
+        ))}
       </div>
+    );
+  }
 
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => (
+        <div
+          key={card.title}
+          className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-colors dark:border-slate-800 dark:bg-slate-950 min-w-0"
+        >
+          {/* Card Meta Header */}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${card.bgClass}`}
+            >
+              {card.icon}
+            </div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 truncate">
+              {card.title}
+            </span>
+          </div>
+
+          {/* Central Value Metrics */}
+          <h3 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-50 truncate">
+            {card.value}
+          </h3>
+
+          {/* Change/Subtext Context */}
+          <p className={`mt-1 text-xs truncate ${card.statusClasses}`}>
+            {card.subtitle}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,17 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignupForm } from "@/components/auth/signup-form";
 import { Logo } from "@/components/ui/logo";
 
-export default function Page() {
-  const slides = [
-    "Turning Donations Into Guaranteed Impact.",
-    "Track Your Contributions From Wallet to Beneficiary.",
-    "Empowering Communities Through Transparent Aid.",
-  ];
+// Static definitions moved outside component to prevent re-allocation on render
+const SLIDES = [
+  "Turning Donations Into Guaranteed Impact.",
+  "Track Your Contributions From Wallet to Beneficiary.",
+  "Empowering Communities Through Transparent Aid.",
+];
 
+export default function Page() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -20,14 +22,14 @@ export default function Page() {
     if (isPaused) return;
 
     const timer = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
+      setActiveIndex((prevIndex) => (prevIndex + 1) % SLIDES.length);
     }, 4000);
 
     return () => clearInterval(timer);
-  }, [isPaused, slides.length]);
+  }, [isPaused]);
 
   const handleNext = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    setActiveIndex((prevIndex) => (prevIndex + 1) % SLIDES.length);
   };
 
   return (
@@ -54,7 +56,7 @@ export default function Page() {
               className="flex transition-transform duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
               style={{ transform: `translateX(-${activeIndex * 100}%)` }}
             >
-              {slides.map((text, index) => (
+              {SLIDES.map((text, index) => (
                 <div key={index} className="w-full shrink-0 pr-6">
                   <h1 className="text-3xl font-black leading-[1.15] tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-5xl lg:text-[2.75rem] xl:text-5xl">
                     {text}
@@ -68,17 +70,20 @@ export default function Page() {
           <div className="mt-10 flex flex-col items-start gap-8">
             {/* Smooth Indicator Trackers */}
             <div className="flex items-center gap-3">
-              {slides.map((_, index) => (
+              {SLIDES.map((_, index) => (
                 <button
                   key={index}
                   type="button"
                   onClick={() => setActiveIndex(index)}
                   aria-label={`Go to slide ${index + 1}`}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    index === activeIndex
-                      ? "w-10 bg-primary shadow-sm shadow-primary/30"
-                      : "w-2 bg-primary/20 hover:bg-primary/40"
-                  }`}
+                  className="h-2 rounded-full transition-all duration-500"
+                  style={{
+                    width: index === activeIndex ? "2.5rem" : "0.5rem",
+                    backgroundColor:
+                      index === activeIndex
+                        ? "var(--primary)"
+                        : "rgba(var(--primary), 0.2)",
+                  }}
                 />
               ))}
             </div>
@@ -89,7 +94,7 @@ export default function Page() {
               className="h-12 w-40 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md shadow-primary/10 transition-all hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
               variant="primary"
             >
-              {activeIndex === slides.length - 1 ? "Start Over" : "Next Slide"}
+              {activeIndex === SLIDES.length - 1 ? "Start Over" : "Next Slide"}
             </Button>
           </div>
         </div>
@@ -97,9 +102,18 @@ export default function Page() {
 
       {/* Right Column - Safe Viewport Form Scroller */}
       <section className="relative z-10 flex w-full justify-center px-4 pb-16 sm:px-12 lg:h-full lg:w-1/2 lg:overflow-y-auto lg:px-16 xl:px-20">
-        {/* my-auto self-centers whenever form is short; lg:py-24 ensures comfortable vertical padding margins during overflow */}
-        <div className="w-full max-w-md my-auto pt-6 pb-12 lg:py-24">
+        <div className="w-full max-w-md my-auto pt-6 pb-12 lg:py-24 flex flex-col gap-6">
           <SignupForm />
+
+          <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+            Already have an operational account?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-blue-600 hover:text-blue-500 transition-colors dark:text-blue-400"
+            >
+              Sign In
+            </Link>
+          </p>
         </div>
       </section>
     </div>

@@ -1,54 +1,59 @@
+// ==========================================
+// FILE: sidebar.tsx (Updated)
+// ==========================================
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { Logo } from "../ui/logo";
 
-// 1. Strict Typing for Navigation Items
 interface NavItem {
   name: string;
   path: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
-export default function Sidebar() {
-  const router = useRouter();
+const navItems: NavItem[] = [
+  { name: "Dashboard", path: "/dashboard", icon: DashboardIcon },
+  { name: "Campaigns", path: "/campaigns", icon: CampaignsIcon },
+  { name: "Logistics", path: "/logistics", icon: LogisticsIcon },
+  { name: "Verification", path: "/verification", icon: VerificationIcon },
+  { name: "Settings", path: "/settings", icon: SettingsIcon },
+];
 
-  const navItems: NavItem[] = [
-    { name: "Dashboard", path: "/dashboard", icon: DashboardIcon },
-    { name: "Campaigns", path: "/campaigns", icon: CampaignsIcon },
-    { name: "Logistics", path: "/logistics", icon: LogisticsIcon },
-    { name: "Verification", path: "/verification", icon: VerificationIcon },
-    { name: "Settings", path: "/settings", icon: SettingsIcon },
-  ];
+export default function Sidebar() {
+  const pathname = usePathname();
 
   return (
-    <aside className="fixed bottom-0 left-0 z-40 h-16 w-full border-t border-white/50 bg-white/40 backdrop-blur-xl shadow-xl md:sticky md:top-0 md:h-screen md:w-64 md:border-r md:border-t-0 p-4 flex md:flex-col justify-between">
-      <div className="w-full flex md:flex-col justify-around md:justify-start md:gap-2">
-        <div className="hidden md:flex items-center gap-2 px-3 py-4 mb-6">
-          <LogoIcon className="h-8 w-8 text-primary-600" />
-          <span className="font-bold text-xl tracking-tight text-text-heading">
-            AidLink
-          </span>
+    <aside className="fixed bottom-0 left-0 z-40 h-16 w-full border-t border-slate-200 bg-white px-2 shadow-lg dark:border-slate-800 dark:bg-slate-950 md:sticky md:top-0 md:h-screen md:w-64 md:border-r md:border-t-0 md:p-4 flex md:flex-col justify-between">
+      <div className="w-full flex md:flex-col justify-around items-center md:items-stretch md:justify-start md:gap-1">
+        {/* Brand Logo Header (Text Removed) */}
+        <div className="hidden md:flex items-center justify-center py-6 mb-2">
+          <Logo />
         </div>
 
+        {/* Dynamic Navigation Options */}
         {navItems.map((item) => {
-          const isActive = router.pathname === item.path;
+          const isActive =
+            pathname === item.path || pathname.startsWith(item.path + "/");
           const Icon = item.icon;
 
           return (
             <Link
               key={item.path}
               href={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
+              className={`flex items-center justify-center md:justify-start gap-3 px-3 py-2.5 md:px-4 md:py-3 rounded-xl transition-all duration-200 group relative ${
                 isActive
-                  ? "bg-primary-600 text-white font-medium shadow-md shadow-primary-600/20"
-                  : "text-text-muted hover:bg-white/60 hover:text-text-heading"
+                  ? "bg-blue-600 text-white font-semibold shadow-xs"
+                  : "text-slate-400 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-500 dark:hover:bg-slate-900 dark:hover:text-white"
               }`}
             >
               <Icon
-                className={`h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                className={`h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-102 ${
                   isActive
                     ? "text-white"
-                    : "text-text-muted group-hover:text-text-heading"
+                    : "text-slate-400 group-hover:text-slate-900 dark:text-slate-500 dark:group-hover:text-white"
                 }`}
               />
               <span className="hidden md:inline text-sm">{item.name}</span>
@@ -60,7 +65,9 @@ export default function Sidebar() {
   );
 }
 
-// Icon Components supporting generic SVG attributes
+// ==========================================
+// Icon Assets (Maintained for layout)
+// ==========================================
 function DashboardIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -161,21 +168,3 @@ function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function LogoIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2.5}
-      stroke="currentColor"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-      />
-    </svg>
-  );
-}

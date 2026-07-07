@@ -13,14 +13,14 @@ import { FaceVerification } from "./face-verification";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://aidlink-jhur.onrender.com";
 
+type RoleType = "BENEFICIARY" | "DONOR" | "PARTNER";
+
 export function SignupForm() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [apiError, setApiError] = useState<string | null>(null);
-
-  // Keep track of the JWT token across steps after Step 1 registration completes
   const [token, setToken] = useState<string>("");
 
   const [formData, setFormData] = useState({
@@ -29,6 +29,13 @@ export function SignupForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "BENEFICIARY" as RoleType,
+    // Partner-specific fields required by backend
+    partnerName: "",
+    category: "MOTORCYCLE", // default value matching expected tier formats
+    bankAccount: "",
+    bankAccountName: "",
+    bankCode: "",
     otp: "",
     nin: "",
     selfie: null as File | null,
@@ -36,16 +43,33 @@ export function SignupForm() {
 
   const [isFaceVerified, setIsFaceVerified] = useState(false);
 
-  const steps = [
-    { id: 1, label: "Personal Info" },
-    { id: 2, label: "OTP" },
-    { id: 3, label: "NIN" },
-    { id: 4, label: "Biometric" },
-  ];
+  const getStepsArray = () => {
+    if (formData.role === "BENEFICIARY") {
+      return [
+        { id: 1, label: "Profile" },
+        { id: 2, label: "OTP" },
+        { id: 3, label: "NIN" },
+        { id: 4, label: "Biometric" },
+      ];
+    }
+    return [
+      { id: 1, label: "Profile" },
+      { id: 2, label: "OTP" },
+    ];
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const steps = getStepsArray();
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (apiError) setApiError(null);
+  };
+
+  const selectRole = (role: RoleType) => {
+    setFormData((prev) => ({ ...prev, role }));
     if (apiError) setApiError(null);
   };
 
@@ -55,19 +79,30 @@ export function SignupForm() {
     setApiError(null);
 
     try {
-      // --- STEP 1: REST API USER REGISTRATION ---
+      // --- STEP 1: DYNAMIC REGISTRATION PAYLOAD ---
       if (currentStep === 1) {
         if (formData.password !== formData.confirmPassword) {
           throw new Error("Passwords do not match.");
         }
 
-        await axios.post(`${API_BASE_URL}/auth/register`, {
+        // Build base registration payload
+        const registrationPayload: Record<string, any> = {
           email: formData.email,
           password: formData.password,
-          role: "BENEFICIARY",
-        });
+          role: formData.role,
+        };
 
-        // Authenticate immediately via /auth/login to get the persistent 24h Bearer token
+        // Dynamically inject the commercial properties required if registering a logistics account
+        if (formData.role === "PARTNER") {
+          registrationPayload.partnerName = formData.partnerName;
+          registrationPayload.category = formData.category;
+          registrationPayload.bankAccount = formData.bankAccount;
+          registrationPayload.bankAccountName = formData.bankAccountName;
+          registrationPayload.bankCode = formData.bankCode;
+        }
+
+        await axios.post(`${API_BASE_URL}/auth/register`, registrationPayload);
+
         const loginResponse = await axios.post(`${API_BASE_URL}/auth/login`, {
           email: formData.email,
           password: formData.password,
@@ -77,39 +112,58 @@ export function SignupForm() {
         setCurrentStep(2);
       }
 
-      // --- STEP 2: LOCAL OR EXTERNAL OTP ---
+      // --- STEP 2: OTP NETWORK VERIFICATION ---
       else if (currentStep === 2) {
-        setCurrentStep(3);
+        await axios.post(`${API_BASE_URL}/auth/verify-otp`, {
+          email: formData.email,
+          code: formData.otp,
+        });
+
+        if (formData.role !== "BENEFICIARY") {
+          router.push(`/${formData.role.toLowerCase()}`);
+        } else {
+          setCurrentStep(3);
+        }
       }
 
-      // --- STEP 3: SMILE ID NIMC REGISTRY VERIFICATION ---
+      // --- STEP 3: BENEFICIARY IDENTITY CHECKS ---
       else if (currentStep === 3) {
         await axios.post(
           `${API_BASE_URL}/verification/verify-nin`,
           { nin: formData.nin },
           { headers: { Authorization: `Bearer ${token}` } },
         );
-
         setCurrentStep(4);
       }
 
-      // --- STEP 4: MOCK BIOMETRIC FACE MATCH ---
+      // --- STEP 4: BENEFICIARY BIOMETRIC MATCH ---
       else if (currentStep === 4) {
         if (!formData.selfie) {
           throw new Error("Please capture your selfie snapshot first.");
         }
 
-        // Directly call your Render mock verification endpoint
-        await axios.post(
-          `${API_BASE_URL}/verification/verify-face`,
-          {
-            selfieUrl: "https://res.cloudinary.com/mock-id-doc.jpg",
-            documentImageUrl: "https://res.cloudinary.com/mock-id-doc.jpg",
-          },
-          { headers: { Authorization: `Bearer ${token}` } },
+        const verificationPayload = new FormData();
+        verificationPayload.append("selfie", formData.selfie);
+        verificationPayload.append(
+          "selfieUrl",
+          "https://res.cloudinary.com/mock-id-doc.jpg",
+        );
+        verificationPayload.append(
+          "documentImageUrl",
+          "https://res.cloudinary.com/mock-id-doc.jpg",
         );
 
-        // Success! Route them directly into the authenticated workspace dashboard
+        await axios.post(
+          `${API_BASE_URL}/verification/verify-face`,
+          verificationPayload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+
         router.push("/beneficiary");
       }
     } catch (err: any) {
@@ -134,13 +188,13 @@ export function SignupForm() {
         </p>
       </div>
 
-      {/* Step Tracker Progress Bar */}
+      {/* Responsive Progress Node Tracker */}
       <div className="relative mb-12 flex w-full items-center justify-between px-2">
         <div className="absolute left-4 right-4 top-1/2 h-1 -translate-y-1/2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
           <div
             className="h-full bg-linear-to-r from-primary to-secondary transition-all duration-500 ease-in-out"
             style={{
-              width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
+              width: `${((currentStep - 1) / (steps.length - 1 || 1)) * 100}%`,
             }}
           />
         </div>
@@ -169,13 +223,14 @@ export function SignupForm() {
                       ? "font-bold text-primary dark:text-primary/90"
                       : "font-medium text-text-body/40 dark:text-gray-500"
                 }`}
-              />
+              >
+                {step.label}
+              </span>
             </div>
           );
         })}
       </div>
 
-      {/* Shared Error Response Interface Banner */}
       {apiError && (
         <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-600 dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400 animate-in fade-in duration-200">
           {apiError}
@@ -183,9 +238,33 @@ export function SignupForm() {
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Step 1: Core Profile Payload */}
+        {/* Step 1: Profile & Dynamic Role Selection */}
         {currentStep === 1 && (
           <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                Select Account Type
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {(["BENEFICIARY", "DONOR", "PARTNER"] as RoleType[]).map(
+                  (roleOption) => (
+                    <button
+                      key={roleOption}
+                      type="button"
+                      onClick={() => selectRole(roleOption)}
+                      className={`h-11 rounded-xl text-xs font-bold transition-all border ${
+                        formData.role === roleOption
+                          ? "border-primary bg-primary/5 text-primary dark:border-primary dark:bg-primary/10"
+                          : "border-slate-200 bg-transparent text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:text-slate-400 dark:hover:bg-white/5"
+                      }`}
+                    >
+                      {roleOption}
+                    </button>
+                  ),
+                )}
+              </div>
+            </div>
+
             <Input
               label="Full Name"
               type="text"
@@ -213,6 +292,65 @@ export function SignupForm() {
               placeholder="johndoe@example.com"
               required
             />
+
+            {/* Render unique Logistics Partner compliance properties if selected */}
+            {formData.role === "PARTNER" && (
+              <div className="flex flex-col gap-4 border-l-2 border-primary/30 pl-3 my-2 animate-in fade-in duration-300">
+                <Input
+                  label="Business / Partner Name"
+                  type="text"
+                  name="partnerName"
+                  value={formData.partnerName}
+                  onChange={handleInputChange}
+                  placeholder="Swift Deliveries Ltd"
+                  required
+                />
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-bold text-text-body/80 dark:text-gray-300">
+                    Logistics Vehicle Category
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-white/50 px-3 text-sm font-medium focus:border-primary focus:outline-hidden dark:border-white/10 dark:bg-black/20"
+                    required
+                  >
+                    <option value="MOTORCYCLE">Motorcycle / Bike</option>
+                    <option value="VAN">Delivery Van</option>
+                    <option value="TRUCK">Freight Truck</option>
+                  </select>
+                </div>
+                <Input
+                  label="Bank Account Number (NUBAN)"
+                  type="text"
+                  name="bankAccount"
+                  value={formData.bankAccount}
+                  onChange={handleInputChange}
+                  placeholder="0123456789"
+                  required
+                />
+                <Input
+                  label="Bank Account Holder Name"
+                  type="text"
+                  name="bankAccountName"
+                  value={formData.bankAccountName}
+                  onChange={handleInputChange}
+                  placeholder="Swift Deliveries Logistics"
+                  required
+                />
+                <Input
+                  label="Bank Sorting Code"
+                  type="text"
+                  name="bankCode"
+                  value={formData.bankCode}
+                  onChange={handleInputChange}
+                  placeholder="044"
+                  required
+                />
+              </div>
+            )}
+
             <Input
               label="Password"
               type="password"
@@ -253,7 +391,7 @@ export function SignupForm() {
           </div>
         )}
 
-        {/* Step 2: SMS / SMTP One-Time Password */}
+        {/* Step 2: OTP Verification */}
         {currentStep === 2 && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <OtpVerification
@@ -263,7 +401,7 @@ export function SignupForm() {
           </div>
         )}
 
-        {/* Step 3: National Identity Number Validation */}
+        {/* Step 3: NIN Verification */}
         {currentStep === 3 && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <NinVerification
@@ -276,7 +414,7 @@ export function SignupForm() {
           </div>
         )}
 
-        {/* Step 4: Biometric Integration Interface */}
+        {/* Step 4: Face Verification */}
         {currentStep === 4 && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <FaceVerification
@@ -294,7 +432,7 @@ export function SignupForm() {
           </div>
         )}
 
-        {/* Navigation Actions Panel */}
+        {/* Navigation Control Track Panel */}
         <div className="flex gap-4 mt-6">
           {currentStep > 1 && (
             <Button
@@ -320,7 +458,7 @@ export function SignupForm() {
               (currentStep === 4 && !isFaceVerified)
             }
           >
-            {currentStep === 4 ? "Complete Setup" : "Continue"}
+            {currentStep === steps.length ? "Complete Setup" : "Continue"}
           </Button>
         </div>
 
