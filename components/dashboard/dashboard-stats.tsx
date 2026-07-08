@@ -3,10 +3,28 @@
 // ==========================================
 "use client";
 
+<<<<<<< HEAD
 import React from "react";
+=======
+import React from 'react';
+import { StatsCard } from './stats-card';
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
 
-export function DashboardStats() {
+interface Stat {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  color: string;
+  trend?: 'up' | 'down';
+}
+
+interface DashboardStatsProps {
+  stats: Stat[];
+}
+
+export function DashboardStats({ stats }: DashboardStatsProps) {
   return (
+<<<<<<< HEAD
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {/* Stat Card 1: Total Funds Raised */}
       <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-950 min-w-0">
@@ -129,6 +147,19 @@ export function DashboardStats() {
           </span>
         </div>
       </div>
+=======
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat, i) => (
+        <StatsCard
+          key={i}
+          label={stat.label}
+          value={stat.value}
+          icon={stat.icon}
+          color={stat.color}
+          trend={stat.trend}
+        />
+      ))}
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
     </div>
   );
 }

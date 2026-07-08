@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
+<<<<<<< HEAD
 type ActivityColor = "blue" | "neutral" | "red" | "amber";
 
 interface Activity {
@@ -146,3 +147,93 @@ export function RecentActivity({
     </section>
   );
 }
+=======
+interface Activity {
+  id: string;
+  action: string;
+  detail: string;
+  timestamp: string;
+  type: 'donation' | 'user' | 'campaign' | 'payout' | 'alert';
+}
+
+interface RecentActivityProps {
+  activities: Activity[];
+}
+
+const typeStyles: Record<string, { bg: string; icon: React.ReactNode }> = {
+  donation: {
+    bg: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  user: {
+    bg: 'bg-primary/10 text-primary',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    ),
+  },
+  campaign: {
+    bg: 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    ),
+  },
+  payout: {
+    bg: 'bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+      </svg>
+    ),
+  },
+  alert: {
+    bg: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      </svg>
+    ),
+  },
+};
+
+export function RecentActivity({ activities }: RecentActivityProps) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-white/50 dark:bg-white/[0.03] border border-white/60 dark:border-white/[0.06] p-6 shadow-lg shadow-black/[0.02] dark:shadow-black/20 backdrop-blur-xl animate-fade-in-up delay-300">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-lg font-bold text-text-heading">Recent Activity</h3>
+          <p className="text-xs text-text-muted mt-0.5">Platform updates</p>
+        </div>
+        <div className="flex h-2 w-2 rounded-full bg-success animate-pulse-soft" />
+      </div>
+      <div className="space-y-0">
+        {activities.map((activity, i) => {
+          const style = typeStyles[activity.type] || typeStyles.user;
+          return (
+            <div
+              key={activity.id}
+              className="flex items-start gap-3 py-3.5 border-b border-border/40 last:border-0"
+            >
+              <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${style.bg}`}>
+                {style.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-text-heading truncate">{activity.action}</p>
+                <p className="text-xs text-text-muted mt-0.5 truncate">{activity.detail}</p>
+              </div>
+              <span className="text-[10px] text-text-muted whitespace-nowrap mt-0.5">{activity.timestamp}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)

@@ -6,8 +6,28 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
-export function RecentDonations() {
+interface Donation {
+  donor: string;
+  amount: string;
+  date: string;
+  status: 'Completed' | 'Pending' | 'Failed';
+  campaign?: string;
+}
+
+interface RecentDonationsProps {
+  donations: Donation[];
+  viewAllHref?: string;
+}
+
+const statusStyles: Record<string, string> = {
+  Completed: 'text-success',
+  Pending: 'text-warning',
+  Failed: 'text-error',
+};
+
+export function RecentDonations({ donations, viewAllHref }: RecentDonationsProps) {
   return (
+<<<<<<< HEAD
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
         Recent Donations
@@ -80,6 +100,46 @@ export function RecentDonations() {
         >
           View All History
         </Button>
+=======
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-text-heading">Recent Donations</h2>
+        {viewAllHref && (
+          <a href={viewAllHref} className="text-sm font-bold text-primary hover:underline">View All</a>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 shadow-card">
+        {donations.length === 0 ? (
+          <p className="text-center text-text-muted py-8">No donations yet.</p>
+        ) : (
+          donations.map((donation, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                  {donation.donor.charAt(0)}
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-bold text-text-heading truncate">{donation.donor}</span>
+                  <span className="text-xs text-text-muted">{donation.date}</span>
+                  {donation.campaign && (
+                    <span className="text-xs text-text-muted truncate">{donation.campaign}</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col items-end shrink-0 ml-4">
+                <span className="text-sm font-bold text-text-heading">{donation.amount}</span>
+                <span className={`text-[10px] font-bold uppercase tracking-wider ${statusStyles[donation.status] || 'text-text-muted'}`}>
+                  {donation.status}
+                </span>
+              </div>
+            </div>
+          ))
+        )}
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
       </div>
     </div>
   );

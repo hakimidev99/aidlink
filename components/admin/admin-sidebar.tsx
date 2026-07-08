@@ -11,10 +11,75 @@ interface NavItem {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
+interface NavItem {
+  name: string;
+  path: string;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+}
+
+const navItems: NavItem[] = [
+  {
+    name: 'Dashboard',
+    path: '/admin',
+    icon: (props) => (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Campaigns',
+    path: '/admin/campaigns',
+    icon: (props) => (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Users',
+    path: '/admin/users',
+    icon: (props) => (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Verifications',
+    path: '/admin/verifications',
+    icon: (props) => (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Transactions',
+    path: '/admin/transactions',
+    icon: (props) => (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Settings',
+    path: '/admin/settings',
+    icon: (props) => (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
+];
+
 export function AdminSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+<<<<<<< HEAD
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
@@ -39,6 +104,10 @@ export function AdminSidebar() {
   return (
     <>
       {/* ================= MOBILE MENU TRIGGER ================= */}
+=======
+  return (
+    <>
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
       <button
         onClick={() => setIsOpen(true)}
         aria-label="Open Sidebar"
@@ -59,6 +128,7 @@ export function AdminSidebar() {
         </svg>
       </button>
 
+<<<<<<< HEAD
       {/* ================= MOBILE BACKDROP ================= */}
       <div
         onClick={() => setIsOpen(false)}
@@ -91,6 +161,26 @@ export function AdminSidebar() {
               stroke="currentColor"
               strokeWidth={2}
               viewBox="0 0 24 24"
+=======
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden animate-fade-in"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col justify-between border-r border-white/60 dark:border-white/[0.06] bg-white/80 dark:bg-black/80 p-6 backdrop-blur-3xl transition-transform duration-300 ease-in-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div>
+          <div className="mb-10 flex items-center justify-between pl-2">
+            <Logo />
+            <button
+              onClick={() => setIsOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 transition-colors lg:hidden"
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
             >
               <path
                 strokeLinecap="round"
@@ -109,10 +199,16 @@ export function AdminSidebar() {
 
           <nav className="mt-4 space-y-1">
             {navItems.map((item) => {
+<<<<<<< HEAD
               const isActive =
                 item.path === "/admin"
                   ? pathname === item.path
                   : pathname.startsWith(item.path);
+=======
+              const isActive = item.path === '/admin'
+                ? pathname === item.path
+                : pathname.startsWith(item.path);
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
 
               const Icon = item.icon;
 
@@ -121,10 +217,17 @@ export function AdminSidebar() {
                   key={item.name}
                   href={item.path}
                   onClick={() => setIsOpen(false)}
+<<<<<<< HEAD
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400"
                       : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
+=======
+                  className={`flex items-center gap-4 rounded-2xl px-4 py-3.5 text-sm font-medium transition-all duration-300 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/25'
+                      : 'text-text-body hover:bg-surface-tertiary hover:text-primary'
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
                   }`}
                 >
                   <Icon
@@ -141,6 +244,7 @@ export function AdminSidebar() {
           </nav>
         </div>
 
+<<<<<<< HEAD
         {/* ================= ACCOUNT ACCOUNT SELECTION ================= */}
         <div className="border-t border-slate-100 p-4 dark:border-slate-900">
           <div className="flex items-center gap-3 px-2 py-1.5">
@@ -180,11 +284,24 @@ export function AdminSidebar() {
             </svg>
             Admin Profile
           </Link>
+=======
+        <div className="mt-auto">
+          <div className="flex items-center gap-3 rounded-2xl border border-white/60 dark:border-white/[0.06] bg-white/40 dark:bg-white/[0.04] p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-inner text-sm font-bold">
+              AD
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-text-heading">Admin User</span>
+              <span className="text-xs text-text-muted">Administrator</span>
+            </div>
+          </div>
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
         </div>
       </aside>
     </>
   );
 }
+<<<<<<< HEAD
 
 // ================= UTILITY UI ICONS =================
 
@@ -292,3 +409,5 @@ function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+=======
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)

@@ -1,7 +1,12 @@
 "use client";
 
+<<<<<<< HEAD
 import React from "react";
 import Input from "@/components/ui/input";
+=======
+import React, { useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
 
 interface NinVerificationProps {
   value: string;
@@ -9,6 +14,7 @@ interface NinVerificationProps {
   error?: string;
 }
 
+<<<<<<< HEAD
 export function NinVerification({
   value,
   onChange,
@@ -29,9 +35,27 @@ export function NinVerification({
     if (rawVal.length <= 11) {
       onChange(rawVal);
     }
+=======
+export function NinVerification({ value, onChange }: NinVerificationProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "");
+    const formattedValue = rawValue.slice(0, 11);
+    onChange(formattedValue);
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
   };
 
+  const displayValue = value
+    .replace(/\D/g, "")
+    .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1-$2-$3-$4");
+
   return (
+<<<<<<< HEAD
     <div className="flex w-full flex-col gap-5 animate-in fade-in zoom-in-95 duration-300">
       {/* Context Text */}
       <div className="text-center">
@@ -87,6 +111,46 @@ export function NinVerification({
         endpoints through the secure **Smile ID portal** directly matching
         government registries.
       </p>
+=======
+    <div className="flex w-full flex-col gap-6">
+      <div className="text-center">
+        <p className="text-sm text-text-body">
+          To ensure transparency and prevent fraud, we need to verify your
+          identity using your 11-digit National Identification Number (NIN).
+        </p>
+      </div>
+
+      <Input
+        ref={inputRef}
+        label="National Identity Number (NIN)"
+        type="text"
+        inputMode="numeric"
+        name="nin"
+        value={displayValue}
+        onChange={handleChange}
+        placeholder="123-456-789-01"
+        required
+      />
+
+      <button
+        type="button"
+        className="flex items-center gap-2 text-sm font-medium text-secondary hover:text-secondary-light transition-colors"
+      >
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        Use my phone NIN
+      </button>
+
+      <div className="rounded-xl border border-primary/20 bg-primary/10 p-4 text-sm text-text-body shadow-inner backdrop-blur-md">
+        <strong className="text-primary-light">Don&apos;t know your NIN?</strong>
+        <p className="mt-1">
+          Dial{" "}
+          <span className="font-bold text-primary-light">*346#</span>{" "}
+          on the phone number associated with your registration to retrieve it.
+        </p>
+      </div>
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
     </div>
   );
 }

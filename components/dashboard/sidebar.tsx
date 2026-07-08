@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "../ui/logo";
 
+<<<<<<< HEAD
 interface NavItem {
   name: string;
   path: string;
@@ -168,3 +169,138 @@ function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+=======
+interface SidebarProps {
+  navItems: { name: string; path: string; icon: React.FC<React.SVGProps<SVGSVGElement>> }[];
+  userInitials: string;
+  userName: string;
+  userRole: string;
+  basePath: string;
+}
+
+export function Sidebar({ navItems, userInitials, userName, userRole, basePath }: SidebarProps) {
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed top-6 left-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg dark:bg-black/50 dark:border-white/10 lg:hidden text-text-heading dark:text-white hover:scale-105 transition-transform"
+        aria-label="Open Menu"
+      >
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="h-6 w-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden animate-fade-in"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col justify-between border-r border-border bg-surface/80 p-6 backdrop-blur-3xl dark:bg-black/80 transition-transform duration-300 ease-in-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div>
+          <div className="mb-10 flex items-center justify-between pl-2">
+            <Logo />
+            <button
+              onClick={() => setIsOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 transition-colors lg:hidden"
+            >
+              <svg className="h-5 w-5 text-text-heading dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <nav className="flex flex-col gap-2">
+            {navItems.map((item) => {
+              const isActive = item.path === basePath
+                ? pathname === item.path
+                : pathname.startsWith(item.path);
+
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  key={item.name}
+                  href={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-4 rounded-2xl px-4 py-3.5 text-sm font-medium transition-all duration-300 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/25'
+                      : 'text-text-body hover:bg-surface-tertiary hover:text-primary'
+                  }`}
+                >
+                  <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-text-muted'}`} />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="mt-auto">
+          <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface-secondary/50 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-inner text-sm font-bold">
+              {userInitials}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-text-heading">{userName}</span>
+              <span className="text-xs text-text-muted">{userRole}</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+function DashboardIcon(props: React.SVGProps<SVGSVGElement>) {
+  return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>;
+}
+
+function CampaignIcon(props: React.SVGProps<SVGSVGElement>) {
+  return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>;
+}
+
+function WalletIcon(props: React.SVGProps<SVGSVGElement>) {
+  return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>;
+}
+
+function MessageIcon(props: React.SVGProps<SVGSVGElement>) {
+  return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>;
+}
+
+function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
+  return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
+}
+
+export { DashboardIcon, CampaignIcon, WalletIcon, MessageIcon, SettingsIcon };
+
+const beneficiaryNavItems = [
+  { name: 'Overview', path: '/beneficiary', icon: DashboardIcon },
+  { name: 'My Campaigns', path: '/beneficiary/campaigns', icon: CampaignIcon },
+  { name: 'Wallet', path: '/beneficiary/wallet', icon: WalletIcon },
+  { name: 'Messages', path: '/beneficiary/messages', icon: MessageIcon },
+  { name: 'Settings', path: '/beneficiary/settings', icon: SettingsIcon },
+];
+
+export function BeneficiarySidebar() {
+  return (
+    <Sidebar
+      navItems={beneficiaryNavItems}
+      userInitials="JD"
+      userName="John Doe"
+      userRole="Beneficiary"
+      basePath="/beneficiary"
+    />
+  );
+}
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)

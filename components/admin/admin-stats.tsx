@@ -2,6 +2,7 @@
 
 import React from "react";
 
+<<<<<<< HEAD
 type AdminStatsProps = {
   stats?: {
     totalProcessed: number;
@@ -188,3 +189,58 @@ export function AdminStats({
     </div>
   );
 }
+=======
+interface Stat {
+  label: string;
+  value: string;
+  change: string;
+  changeType: 'positive' | 'negative' | 'neutral';
+  accent: 'success' | 'error' | 'primary' | 'info';
+  icon: React.ReactNode;
+}
+
+interface AdminStatsProps {
+  stats: Stat[];
+}
+
+const accentMap = {
+  success: 'from-emerald-500 to-emerald-600',
+  error: 'from-red-500 to-red-600',
+  primary: 'from-primary to-primary-light',
+  info: 'from-blue-500 to-cyan-500',
+};
+
+const changeColors = {
+  positive: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+  negative: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400',
+  neutral: 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400',
+};
+
+export function AdminStats({ stats }: AdminStatsProps) {
+  return (
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat, i) => (
+        <div
+          key={stat.label}
+          className="group relative overflow-hidden rounded-2xl bg-white/50 dark:bg-white/[0.03] border border-white/60 dark:border-white/[0.06] p-5 shadow-lg shadow-black/[0.02] dark:shadow-black/20 backdrop-blur-xl hover:shadow-xl hover:border-white/80 dark:hover:border-white/10 transition-all duration-300 animate-fade-in-up"
+          style={{ animationDelay: `${i * 100}ms` }}
+        >
+          <div className={`absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br ${accentMap[stat.accent]} opacity-[0.08] dark:opacity-[0.12] blur-xl transition-all duration-500 group-hover:scale-150 group-hover:opacity-[0.15]`} />
+          <div className="relative">
+            <div className="flex items-center justify-between mb-3">
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${accentMap[stat.accent]} text-white shadow-sm`}>
+                {stat.icon}
+              </div>
+              <span className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-bold ${changeColors[stat.changeType]}`}>
+                {stat.change}
+              </span>
+            </div>
+            <p className="text-2xl font-black tracking-tight text-text-heading">{stat.value}</p>
+            <p className="mt-0.5 text-sm text-text-muted">{stat.label}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)

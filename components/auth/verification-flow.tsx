@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { NinVerification } from "./nin-verification";
@@ -236,6 +237,121 @@ export default function VerificationFlow({
           </>
         )}
       </div>
+=======
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { OtpVerification } from "./otp-verification";
+import { NinVerification } from "./nin-verification";
+import { FaceVerification } from "./face-verification";
+
+interface VerificationFlowProps {
+  email: string;
+  onComplete: () => void;
+}
+
+export function VerificationFlow({ email, onComplete }: VerificationFlowProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [otpValue, setOtpValue] = useState("");
+  const [ninValue, setNinValue] = useState("");
+  const [isFaceVerified, setIsFaceVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const steps = [
+    { id: 0, label: "Phone" },
+    { id: 1, label: "NIN" },
+    { id: 2, label: "Selfie" },
+  ];
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      onComplete();
+    }
+  };
+
+  const handleVerify = async () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      handleNext();
+    }, 1500);
+  };
+
+  const canProceed =
+    (currentStep === 0 && otpValue.length === 6) ||
+    (currentStep === 1 && ninValue.length === 11) ||
+    (currentStep === 2 && isFaceVerified);
+
+  return (
+    <div className="flex w-full flex-col items-center gap-8">
+      {/* Steps indicator */}
+      <div className="flex w-full items-center justify-between">
+        {steps.map((step, index) => (
+          <React.Fragment key={step.id}>
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                  index < currentStep
+                    ? "bg-success text-white"
+                    : index === currentStep
+                      ? "bg-secondary text-white shadow-lg shadow-secondary/30 scale-110"
+                      : "bg-surface-secondary text-text-muted dark:bg-white/10 dark:text-white/40"
+                }`}
+              >
+                {index < currentStep ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  index + 1
+                )}
+              </div>
+              <span className={`text-[10px] ${index <= currentStep ? "font-bold text-text-heading" : "text-text-muted"}`}>
+                {step.label}
+              </span>
+            </div>
+            {index < steps.length - 1 && (
+              <div className={`h-px flex-1 mx-3 ${index < currentStep ? "bg-success" : "bg-border dark:bg-white/10"}`} />
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
+      <div className="w-full">
+        {currentStep === 0 && <OtpVerification email={email} onChange={setOtpValue} />}
+        {currentStep === 1 && <NinVerification value={ninValue} onChange={setNinValue} />}
+        {currentStep === 2 && (
+          <FaceVerification
+            isCaptured={isFaceVerified}
+            onCapture={() => setIsFaceVerified(true)}
+            onRetake={() => setIsFaceVerified(false)}
+          />
+        )}
+      </div>
+
+      <div className="flex w-full gap-3">
+        {currentStep > 0 && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setCurrentStep(currentStep - 1)}
+            className="flex-1 border-gray-300 dark:border-white/20 text-text-heading hover:bg-gray-100 dark:hover:bg-white/10"
+          >
+            Back
+          </Button>
+        )}
+        <Button
+          type="button"
+          onClick={handleVerify}
+          disabled={!canProceed}
+          isLoading={isLoading}
+          className="flex-1"
+        >
+          {currentStep === steps.length - 1 ? "Complete" : "Verify"}
+        </Button>
+      </div>
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import axios from "axios";
 import Input from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -72,10 +73,33 @@ export function SignupForm() {
     setFormData((prev) => ({ ...prev, role }));
     if (apiError) setApiError(null);
   };
+=======
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { OtpVerification } from "./otp-verification";
+import { NinVerification } from "./nin-verification";
+import { FaceVerification } from "./face-verification";
+
+export function SignupForm() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [otpValue, setOtpValue] = useState("");
+  const [ninValue, setNinValue] = useState("");
+  const [isFaceVerified, setIsFaceVerified] = useState(false);
+
+  const steps = [
+    { id: 1, label: "Personal Info" },
+    { id: 2, label: "OTP Verification" },
+    { id: 3, label: "NIN Verification" },
+    { id: 4, label: "Face Verification" },
+  ];
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+<<<<<<< HEAD
     setApiError(null);
 
     try {
@@ -124,6 +148,14 @@ export function SignupForm() {
         } else {
           setCurrentStep(3);
         }
+=======
+    setTimeout(() => {
+      setIsLoading(false);
+      if (currentStep < 4) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        router.push("/beneficiary");
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
       }
 
       // --- STEP 3: BENEFICIARY IDENTITY CHECKS ---
@@ -178,6 +210,7 @@ export function SignupForm() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="flex w-full max-w-lg flex-col justify-center rounded-3xl border border-white/40 bg-white/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-black/40 sm:p-10 transition-all duration-300">
       <div className="mb-8 text-center">
         <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white sm:text-3xl">
@@ -195,15 +228,29 @@ export function SignupForm() {
             className="h-full bg-linear-to-r from-primary to-secondary transition-all duration-500 ease-in-out"
             style={{
               width: `${((currentStep - 1) / (steps.length - 1 || 1)) * 100}%`,
+=======
+    <div className="flex w-[70vw] min-w-[500px] flex-col rounded-3xl border border-white/30 bg-white/20 shadow-2xl backdrop-blur-3xl dark:border-white/10 dark:bg-black/10 px-10 py-10">
+      <div className="mb-10 text-center">
+        <h2 className="text-3xl font-bold text-text-heading dark:text-white">
+          Account Setup
+        </h2>
+      </div>
+
+      <div className="relative mb-14 flex items-center justify-between">
+        <div className="absolute left-[8px] right-[8px] top-1/2 h-[6px] -translate-y-1/2 rounded-full bg-white/20 dark:bg-white/10 overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-500 ease-in-out"
+            style={{
+              width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
             }}
           />
         </div>
-
         {steps.map((step) => {
           const isActive = step.id === currentStep;
           const isCompleted = step.id < currentStep;
-
           return (
+<<<<<<< HEAD
             <div
               key={step.id}
               className="relative z-10 flex flex-col items-center"
@@ -222,6 +269,23 @@ export function SignupForm() {
                     : isCompleted
                       ? "font-bold text-primary dark:text-primary/90"
                       : "font-medium text-text-body/40 dark:text-gray-500"
+=======
+            <div key={step.id} className="relative z-10 flex flex-col items-center">
+              <div
+                className={`h-4 w-4 rounded-full transition-all duration-300 ${
+                  isActive || isCompleted
+                    ? "bg-gradient-to-r from-primary to-secondary shadow-[0_0_12px_rgba(0,119,182,0.6)] border-none scale-110"
+                    : "bg-white/50 border-2 border-white/30 backdrop-blur-sm dark:bg-black/50 dark:border-white/20"
+                }`}
+              />
+              <span
+                className={`absolute top-6 w-32 text-center text-xs transition-all duration-300 ${
+                  isActive
+                    ? "font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary scale-105"
+                    : isCompleted
+                      ? "font-bold text-primary dark:text-primary"
+                      : "font-medium text-text-body/70 dark:text-gray-500"
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
                 }`}
               >
                 {step.label}
@@ -231,6 +295,7 @@ export function SignupForm() {
         })}
       </div>
 
+<<<<<<< HEAD
       {apiError && (
         <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-600 dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400 animate-in fade-in duration-200">
           {apiError}
@@ -265,16 +330,25 @@ export function SignupForm() {
               </div>
             </div>
 
+=======
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:px-8">
+        {currentStep === 1 && (
+          <>
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
             <Input
               label="Full Name"
               type="text"
               name="name"
+<<<<<<< HEAD
               value={formData.name}
               onChange={handleInputChange}
+=======
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
               placeholder="John Doe"
               required
             />
             <Input
+<<<<<<< HEAD
               label="Username"
               type="text"
               name="username"
@@ -377,11 +451,51 @@ export function SignupForm() {
                   required
                   className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 bg-white/50 accent-primary focus:ring-primary"
                 />
+=======
+              label="Email"
+              type="email"
+              name="email"
+              placeholder="johndoe@example.com"
+              required
+            />
+            <Input
+              label="Phone Number"
+              type="tel"
+              name="phone"
+              placeholder="+234 800 000 0000"
+              required
+            />
+            <Input
+              label="Password"
+              type="password"
+              name="password"
+              placeholder="Min. 8 characters"
+              required
+            />
+            <Input
+              label="Confirm Password"
+              type="password"
+              name="confirmPassword"
+              placeholder="Re-enter password"
+              required
+            />
+            <div className="mt-2 flex items-center">
+              <label className="flex cursor-pointer items-start gap-2 text-sm text-text-body dark:text-gray-300">
+                <input
+                  type="checkbox"
+                  required
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 dark:border-white/20 bg-gray-100 dark:bg-white/10 accent-primary focus:ring-primary"
+                />
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
                 <span>
                   By signing up, you agree to our{" "}
                   <Link
                     href="/terms"
+<<<<<<< HEAD
                     className="font-bold text-primary transition-colors hover:text-secondary underline underline-offset-2"
+=======
+                    className="font-bold text-primary transition-colors hover:text-secondary"
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
                   >
                     Terms & Conditions
                   </Link>
@@ -393,6 +507,7 @@ export function SignupForm() {
 
         {/* Step 2: OTP Verification */}
         {currentStep === 2 && (
+<<<<<<< HEAD
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <OtpVerification
               email={formData.email || "johndoe@example.com"}
@@ -469,6 +584,49 @@ export function SignupForm() {
               <Link
                 href="/login"
                 className="text-xs font-bold text-primary transition-colors hover:text-secondary ml-1"
+=======
+          <OtpVerification
+            email="johndoe@example.com"
+            onChange={(val) => setOtpValue(val)}
+          />
+        )}
+
+        {currentStep === 3 && (
+          <NinVerification
+            value={ninValue}
+            onChange={(val) => setNinValue(val)}
+          />
+        )}
+
+        {currentStep === 4 && (
+          <FaceVerification
+            isCaptured={isFaceVerified}
+            onCapture={() => setIsFaceVerified(true)}
+            onRetake={() => setIsFaceVerified(false)}
+          />
+        )}
+
+        <Button
+          type="submit"
+          className="mt-6 w-full py-6 text-lg"
+          isLoading={isLoading}
+          disabled={
+            (currentStep === 2 && otpValue.length < 6) ||
+            (currentStep === 3 && ninValue.length < 11) ||
+            (currentStep === 4 && !isFaceVerified)
+          }
+        >
+          {currentStep === 4 ? "Complete Setup" : "Continue"}
+        </Button>
+
+        {currentStep === 1 && (
+          <div className="mt-4 flex items-center justify-center">
+            <p className="font-medium text-text-heading dark:text-white">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="text-sm font-bold text-primary transition-colors hover:text-secondary"
+>>>>>>> 5ed0da5 (added landing apge and dashboard routing)
               >
                 Login
               </Link>
